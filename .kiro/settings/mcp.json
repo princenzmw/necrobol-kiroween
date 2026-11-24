@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "necrobol-mainframe": {
+      "command": "node",
+      "args": ["mcp-server/server.mjs"],
+      "disabled": false,
+      "autoApprove": [
+        "list_legacy_samples",
+        "analyze_cobol",
+        "execute_cobol",
+        "transpile_cobol"
+      ]
+    }
+  }
+}

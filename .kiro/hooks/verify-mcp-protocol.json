@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Verify MCP Protocol Bridge on Save",
+      "trigger": "PostFileSave",
+      "matcher": "mcp-server/.*\\.(ts|mjs)$",
+      "action": {
+        "type": "command",
+        "command": "npm run build:mcp && npm run test -- --run src/engine/__tests__/mcpServer.test.ts"
+      }
+    }
+  ]
+}
