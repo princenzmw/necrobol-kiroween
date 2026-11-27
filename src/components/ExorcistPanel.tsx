@@ -11,13 +11,26 @@ interface ExorcistPanelProps {
 function severityBadge(sev: CurseSeverity): string {
   switch (sev) {
     case 'CRITICAL':
-      return 'border-red-700 bg-red-950/70 text-red-200';
+      return 'border-red-600/80 bg-red-950/70 text-red-200';
     case 'HIGH':
-      return 'border-amber-700 bg-amber-950/70 text-amber-200';
+      return 'border-amber-600/80 bg-amber-950/70 text-amber-200';
     case 'MEDIUM':
-      return 'border-violet-700 bg-violet-950/70 text-violet-200';
+      return 'border-violet-600/80 bg-violet-950/70 text-violet-200';
     case 'LOW':
       return 'border-zinc-700 bg-zinc-900 text-zinc-300';
+  }
+}
+
+function severityAccentBorder(sev: CurseSeverity): string {
+  switch (sev) {
+    case 'CRITICAL':
+      return 'border-l-red-500';
+    case 'HIGH':
+      return 'border-l-amber-400';
+    case 'MEDIUM':
+      return 'border-l-violet-400';
+    case 'LOW':
+      return 'border-l-zinc-500';
   }
 }
 
@@ -34,21 +47,27 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
 
   const posMap = new Map(nodePositions.map((n) => [n.name, n]));
   const svgHeight = Math.max(120, Math.ceil(report.paragraphs.length / 2) * 76 + 34);
+  const litSegments = report.hauntingScore === 0 ? 0 : Math.max(1, Math.round(report.hauntingScore / 10));
 
   return (
     <div className="space-y-4">
-      <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+      <section className="hardware-panel rounded-xs p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {report.hauntingScore === 0 ? (
-              <ShieldCheck className="h-5 w-5 text-emerald-400" />
+              <ShieldCheck className="h-5 w-5 text-[#34F585]" />
             ) : (
               <ShieldAlert className="h-5 w-5 text-rose-400" />
             )}
             <div>
-              <h2 className="font-mono text-sm font-bold text-zinc-100">
-                EXORCIST AUDIT // {report.grade}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="font-hardware text-sm font-bold text-zinc-100">
+                  Exorcist Static Audit
+                </h2>
+                <span className="rounded-xs border border-[#2B313B] bg-[#111418] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">
+                  {report.grade}
+                </span>
+              </div>
               <p className="text-xs text-zinc-400">
                 {report.curses.length} {report.curses.length === 1 ? 'hazard' : 'hazards'} detected across{' '}
                 {report.paragraphs.length} paragraphs
@@ -60,41 +79,41 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
             <div
               className={`text-2xl font-bold ${
                 report.hauntingScore === 0
-                  ? 'text-emerald-400'
+                  ? 'text-[#34F585]'
                   : report.hauntingScore <= 25
-                    ? 'text-amber-300'
+                    ? 'text-[#FFB020]'
                     : 'text-rose-400'
               }`}
             >
               {report.hauntingScore}/100
             </div>
-            <div className="text-[10px] text-zinc-500">HAUNTING SCORE</div>
+            <div className="text-[10px] text-zinc-400">Haunting Score</div>
           </div>
         </div>
 
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-900">
-          <div
-            className={`h-full transition-all ${
-              report.hauntingScore === 0
-                ? 'bg-emerald-500'
-                : report.hauntingScore <= 25
-                  ? 'bg-amber-400'
-                  : 'bg-rose-500'
-            }`}
-            style={{ width: `${Math.max(4, report.hauntingScore)}%` }}
-          />
+        <div className="mt-3 grid grid-cols-10 gap-1" aria-label="Haunting score gauge">
+          {Array.from({ length: 10 }, (_, idx) => {
+            const lit = idx < litSegments;
+            const color = !lit
+              ? 'bg-[#111418] border-[#2B313B]'
+              : report.hauntingScore <= 25
+                ? 'bg-[#FFB020] border-[#FFB020]'
+                : 'bg-rose-500 border-rose-400';
+            return <div key={idx} className={`h-2.5 rounded-xs border ${color}`} />;
+          })}
         </div>
       </section>
 
-      <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-mono text-xs font-semibold text-zinc-200">
-            CURSE DIAGNOSTICS (CLICK TO JUMP TO LINE)
+      <section className="hardware-panel rounded-xs p-4">
+        <div className="flex items-center justify-between border-b border-[#2B313B] pb-2">
+          <h3 className="font-hardware text-sm font-semibold text-zinc-100">
+            Curse Diagnostics
           </h3>
+          <span className="font-mono text-[11px] text-zinc-400">Click any row to jump to line</span>
         </div>
 
         {report.curses.length === 0 ? (
-          <div className="mt-3 rounded-lg border border-emerald-800/60 bg-emerald-950/30 p-3 font-mono text-xs text-emerald-300">
+          <div className="mt-3 rounded-xs border border-emerald-700/60 bg-[#04130B] p-3 font-mono text-xs text-[#34F585]">
             Zero curses detected. Program is free of Y2K rollovers, GO TO branches, and ghost paragraphs.
           </div>
         ) : (
@@ -104,12 +123,12 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
                 key={curse.id}
                 type="button"
                 onClick={() => onJumpToLine(curse.line)}
-                className="block w-full cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900/60 p-3 text-left transition hover:border-zinc-600 hover:bg-zinc-900"
+                className={`block w-full cursor-pointer rounded-xs border border-[#2B313B] border-l-4 ${severityAccentBorder(curse.severity)} bg-[#111418] p-3 text-left transition hover:border-zinc-500 hover:bg-[#151920]`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-semibold ${severityBadge(curse.severity)}`}
+                      className={`rounded-xs border px-1.5 py-0.5 font-mono text-[10px] font-semibold ${severityBadge(curse.severity)}`}
                     >
                       {curse.severity}
                     </span>
@@ -117,11 +136,11 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
                       {curse.title}
                     </span>
                   </div>
-                  <span className="font-mono text-[11px] text-zinc-400">
-                    L{curse.line} · {curse.code}
+                  <span className="rounded-xs border border-[#2B313B] bg-[#191D23] px-1.5 py-0.5 font-mono text-[11px] text-zinc-300">
+                    L{curse.line} {curse.code}
                   </span>
                 </div>
-                <p className="mt-1 text-xs text-zinc-300">{curse.detail}</p>
+                <p className="mt-1.5 text-xs text-zinc-300">{curse.detail}</p>
                 <p className={`mt-1 font-mono text-[11px] ${tokens.accentText}`}>
                   Fix: {curse.remediation}
                 </p>
@@ -131,13 +150,13 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
         )}
       </section>
 
-      <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+      <section className="hardware-panel rounded-xs p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="font-mono text-xs font-semibold text-zinc-200">
-            PARAGRAPH CONTROL-FLOW GRAPH
+          <h3 className="font-hardware text-sm font-semibold text-zinc-100">
+            Paragraph Control-Flow Graph
           </h3>
           <div className="flex items-center gap-3 font-mono text-[10px] text-zinc-400">
-            <span className={tokens.accentText}>Solid = PERFORM/Flow</span>
+            <span className={tokens.accentText}>Solid = PERFORM</span>
             <span className="text-rose-400">Crimson = GO TO</span>
             <span className="inline-flex items-center gap-1 text-violet-300">
               <Ghost className="h-3 w-3" /> Dashed = Ghost
@@ -145,7 +164,7 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
           </div>
         </div>
 
-        <div className="mt-3 overflow-x-auto rounded-lg border border-zinc-800 bg-black/70 p-2">
+        <div className="crt-glass scope-grid mt-3 overflow-x-auto rounded-xs border border-[#2B313B] p-2">
           <svg width="470" height={svgHeight} viewBox={`0 0 470 ${svgHeight}`} className="max-w-full">
             <defs>
               <marker id="arrow-normal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
@@ -183,7 +202,7 @@ export function ExorcistPanel({ report, onJumpToLine, theme }: ExorcistPanelProp
                 <rect
                   width="190"
                   height="40"
-                  rx="6"
+                  rx="2"
                   fill={node.isGhost ? '#2e1065' : tokens.graphFill}
                   stroke={node.isGhost ? '#c084fc' : tokens.graphStroke}
                   strokeWidth="1.5"

@@ -106,9 +106,11 @@ export function App() {
   }, [handleReset, handleExecute, handleStep, handleExorciseAndModernize]);
 
   const tokens = PHOSPHOR_THEMES[theme];
+  const totalSteps = execution.steps.length;
+  const clampedStep = totalSteps > 0 ? Math.min(stepIdx, totalSteps - 1) + 1 : 0;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="chassis-desk flex min-h-screen flex-col text-zinc-100">
       <MainframeHeader
         selectedSampleId={selectedSampleId}
         onSelectSample={handleSelectSample}
@@ -123,7 +125,7 @@ export function App() {
         onOpenKiroModal={() => setKiroModalOpen(true)}
       />
 
-      <main className="mx-auto max-w-[1440px] px-4 py-5 sm:px-6">
+      <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-5 sm:px-6">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <CobolEditor
@@ -144,7 +146,7 @@ export function App() {
           </div>
 
           <div className="space-y-4 lg:col-span-6">
-            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/60 p-1.5">
+            <div className="hardware-panel flex flex-wrap divide-x divide-[#2B313B] overflow-hidden rounded-xs">
               {(
                 [
                   { id: 'debugger', label: '3270 Terminal & Time-Travel' },
@@ -156,10 +158,10 @@ export function App() {
                   key={item.id}
                   type="button"
                   onClick={() => setRightTab(item.id)}
-                  className={`flex-1 cursor-pointer rounded-lg px-3 py-1.5 font-mono text-xs transition ${
+                  className={`flex-1 cursor-pointer px-3 py-2 font-mono text-xs transition ${
                     rightTab === item.id
-                      ? `${tokens.buttonSolid} font-bold`
-                      : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+                      ? `${tokens.crtWellBg} ${tokens.accentText} ${tokens.activeTabBorder} font-bold`
+                      : 'bg-[#191D23] text-zinc-400 hover:bg-[#1E232B] hover:text-zinc-100'
                   }`}
                 >
                   {item.label}
@@ -196,6 +198,20 @@ export function App() {
           </div>
         </div>
       </main>
+
+      <footer className="border-t border-[#2B313B] bg-[#0B0E12] px-4 py-2 font-mono text-[11px] text-zinc-400 sm:px-6">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-4">
+            <span className={tokens.accentText}>SYSTEM: ONLINE</span>
+            <span>ARCHIVE: {parsed.programId}</span>
+            <span>MODE: {tokens.label.toUpperCase()}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span>STEP {clampedStep}/{totalSteps}</span>
+            <span>PF3/PF5/PF8/PF9 READY</span>
+          </div>
+        </div>
+      </footer>
 
       <KiroInspectorModal open={kiroModalOpen} onClose={() => setKiroModalOpen(false)} />
     </div>

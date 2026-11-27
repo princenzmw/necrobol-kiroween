@@ -32,42 +32,52 @@ export function TerminalDebugger({
 
   return (
     <div className="space-y-4">
-      <section className={`relative overflow-hidden rounded-xl border ${tokens.accentBorder} bg-zinc-950 ${tokens.glowShadow}`}>
-        {scanlines && <div className="crt-scanlines pointer-events-none absolute inset-0 z-10" />}
-
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 px-4 py-2.5">
+      <section className={`hardware-panel rounded-xs p-2 ${tokens.glowShadow}`}>
+        <div className="flex flex-wrap items-center justify-between gap-2 px-2 pb-2">
           <div className="flex items-center gap-2">
             <Terminal className={`h-4 w-4 ${tokens.accentText}`} />
-            <span className="font-mono text-xs font-semibold text-zinc-100">
-              IBM 3270 TERMINAL // {execution.programId}
+            <span className="font-hardware text-sm font-semibold text-zinc-100">
+              IBM 3270 Display
+            </span>
+            <span className="rounded-xs border border-[#2B313B] bg-[#111418] px-1.5 py-0.5 font-mono text-[11px] text-zinc-300">
+              {execution.programId}
             </span>
           </div>
-          <span className="rounded border border-zinc-800 bg-zinc-900 px-2 py-0.5 font-mono text-[11px] text-zinc-400">
-            HALT: {execution.haltedReason} · STEP {totalSteps > 0 ? clampedIdx + 1 : 0}/{totalSteps}
+          <span className="rounded-xs border border-[#2B313B] bg-[#111418] px-2 py-0.5 font-mono text-[11px] text-zinc-300">
+            HALT: {execution.haltedReason} | STEP {totalSteps > 0 ? clampedIdx + 1 : 0}/{totalSteps}
           </span>
         </div>
 
-        <div className="min-h-[168px] space-y-1 bg-black/75 p-4 font-mono text-xs">
-          {displayedOutput.length === 0 ? (
-            <div className="text-zinc-500">READY. PRESS PF5 TO EXECUTE OR STEP THROUGH BATCH.</div>
-          ) : (
-            displayedOutput.map((line, idx) => (
-              <div key={`${idx}-${line}`} className={`${tokens.accentText} leading-5`}>
-                <span className="mr-2 select-none text-zinc-600">&gt;</span>
-                {line}
-              </div>
-            ))
-          )}
+        <div className={`crt-glass relative overflow-hidden rounded-xs border ${tokens.accentBorder} ${tokens.crtWellBg}`}>
+          {scanlines && <div className="crt-scanlines pointer-events-none absolute inset-0 z-10" />}
+
+          <div className="min-h-[172px] space-y-1 p-4 font-mono text-xs">
+            {displayedOutput.length === 0 ? (
+              <div className="text-zinc-400">READY. PRESS PF5 TO EXECUTE OR STEP THROUGH BATCH.</div>
+            ) : (
+              displayedOutput.map((line, idx) => (
+                <div key={`${idx}-${line}`} className={`${tokens.accentText} ${tokens.textGlow} leading-5`}>
+                  <span className="mr-2 select-none text-zinc-500">&gt;</span>
+                  {line}
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="flex items-center justify-between border-t border-white/10 bg-black/50 px-4 py-1.5 font-mono text-[10px] text-zinc-400">
+            <span>4-3270-DISPLAY</span>
+            <span>{activeStep ? `L${activeStep.line} [${activeStep.paragraph}]` : 'IDLE'}</span>
+          </div>
         </div>
 
-        <div className="border-t border-zinc-800 bg-zinc-900/70 px-4 py-2.5">
+        <div className="mt-2 rounded-xs border border-[#2B313B] bg-[#111418] px-3 py-2.5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => onChangeStep(0)}
                 disabled={totalSteps === 0}
-                className="cursor-pointer rounded border border-zinc-700 bg-zinc-900 p-1.5 text-zinc-300 hover:bg-zinc-800 disabled:opacity-40"
+                className="pf-keycap cursor-pointer rounded-xs border border-[#38404D] bg-[#222730] p-1.5 text-zinc-200 hover:bg-[#2A303B] disabled:opacity-40"
                 title="Jump to Step 1"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
@@ -76,7 +86,7 @@ export function TerminalDebugger({
                 type="button"
                 onClick={() => onChangeStep(Math.max(0, clampedIdx - 1))}
                 disabled={clampedIdx === 0 || totalSteps === 0}
-                className="cursor-pointer rounded border border-zinc-700 bg-zinc-900 p-1.5 text-zinc-300 hover:bg-zinc-800 disabled:opacity-40"
+                className="pf-keycap cursor-pointer rounded-xs border border-[#38404D] bg-[#222730] p-1.5 text-zinc-200 hover:bg-[#2A303B] disabled:opacity-40"
                 title="Previous Step"
               >
                 <SkipBack className="h-3.5 w-3.5" />
@@ -85,7 +95,7 @@ export function TerminalDebugger({
                 type="button"
                 onClick={onTogglePlay}
                 disabled={totalSteps === 0}
-                className={`inline-flex cursor-pointer items-center gap-1 rounded px-2.5 py-1 font-mono text-xs font-semibold ${tokens.buttonSolid} disabled:opacity-40`}
+                className={`pf-keycap inline-flex cursor-pointer items-center gap-1 rounded-xs px-2.5 py-1 font-mono text-xs font-semibold ${tokens.buttonSolid} disabled:opacity-40`}
               >
                 {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
                 {playing ? 'Pause' : 'Replay Trace'}
@@ -94,7 +104,7 @@ export function TerminalDebugger({
                 type="button"
                 onClick={() => onChangeStep(Math.min(totalSteps - 1, clampedIdx + 1))}
                 disabled={clampedIdx >= totalSteps - 1 || totalSteps === 0}
-                className="cursor-pointer rounded border border-zinc-700 bg-zinc-900 p-1.5 text-zinc-300 hover:bg-zinc-800 disabled:opacity-40"
+                className="pf-keycap cursor-pointer rounded-xs border border-[#38404D] bg-[#222730] p-1.5 text-zinc-200 hover:bg-[#2A303B] disabled:opacity-40"
                 title="Next Step"
               >
                 <SkipForward className="h-3.5 w-3.5" />
@@ -103,7 +113,7 @@ export function TerminalDebugger({
 
             {activeStep && (
               <span className="truncate font-mono text-[11px] text-zinc-300">
-                L{activeStep.line} [{activeStep.paragraph}] {activeStep.statementText}
+                {activeStep.statementText}
               </span>
             )}
           </div>
@@ -116,32 +126,32 @@ export function TerminalDebugger({
               value={clampedIdx}
               onChange={(e) => onChangeStep(Number(e.target.value))}
               aria-label="Time-travel debugger step scrubber"
-              className="mt-2 w-full accent-emerald-500"
+              className="mt-2.5 w-full accent-emerald-400"
             />
           )}
         </div>
       </section>
 
       {activeWarnings.length > 0 && (
-        <section className="rounded-xl border border-amber-700/60 bg-amber-950/30 p-3 text-xs text-amber-200">
-          <div className="flex items-center gap-1.5 font-mono font-semibold text-amber-300">
+        <section className="rounded-xs border border-amber-600/60 border-l-4 border-l-amber-400 bg-[#1F170B] p-3 text-xs text-amber-200">
+          <div className="flex items-center gap-1.5 font-hardware font-semibold text-amber-300">
             <AlertTriangle className="h-4 w-4" />
-            RUNTIME MAINFRAME HAZARDS ({activeWarnings.length})
+            Runtime Mainframe Hazards ({activeWarnings.length})
           </div>
           <ul className="mt-1.5 space-y-1 font-mono text-[11px]">
             {activeWarnings.map((w, idx) => (
-              <li key={`${idx}-${w}`}>• {w}</li>
+              <li key={`${idx}-${w}`}>- {w}</li>
             ))}
           </ul>
         </section>
       )}
 
-      <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-mono text-xs font-semibold text-zinc-200">
-            WORKING-STORAGE MEMORY REGISTERS
+      <section className="hardware-panel rounded-xs p-4">
+        <div className="flex items-center justify-between border-b border-[#2B313B] pb-2">
+          <h2 className="font-hardware text-sm font-semibold text-zinc-100">
+            Working-Storage Registers
           </h2>
-          <span className="font-mono text-[11px] text-zinc-500">
+          <span className="font-mono text-[11px] text-zinc-400">
             {execution.finalVariables.length} fields
           </span>
         </div>
@@ -149,19 +159,19 @@ export function TerminalDebugger({
         <div className="mt-2.5 overflow-x-auto">
           <table className="w-full text-left font-mono text-xs">
             <thead>
-              <tr className="border-b border-zinc-800 text-[11px] text-zinc-500">
+              <tr className="border-b border-[#2B313B] text-[11px] text-zinc-400">
                 <th className="py-1.5 pr-3">FIELD</th>
                 <th className="py-1.5 pr-3">PIC</th>
                 <th className="py-1.5">VALUE</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-900">
+            <tbody className="divide-y divide-[#232933]">
               {execution.finalVariables.map((v) => {
                 const liveVal = displayedVars[v.name] ?? v.value;
                 const mutated = changedSet.has(v.name);
                 return (
                   <tr key={v.name} className={mutated ? `${tokens.accentBg}` : undefined}>
-                    <td className="py-1.5 pr-3 font-medium text-zinc-200">
+                    <td className="py-1.5 pr-3 font-medium text-zinc-100">
                       {v.name}
                       {mutated && <span className={`ml-1.5 text-[10px] ${tokens.accentText}`}>*MOD</span>}
                     </td>
@@ -169,7 +179,7 @@ export function TerminalDebugger({
                     <td className={`py-1.5 ${v.truncated ? 'text-amber-300' : tokens.accentText}`}>
                       {String(liveVal)}
                       {v.truncated && (
-                        <span className="ml-2 rounded border border-amber-700/60 bg-amber-950/60 px-1 py-0.5 text-[10px] text-amber-300">
+                        <span className="ml-2 rounded-xs border border-amber-600/60 bg-amber-950/60 px-1.5 py-0.5 text-[10px] text-amber-300">
                           TRUNCATED
                         </span>
                       )}

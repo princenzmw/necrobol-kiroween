@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  --chassis-desk: #111418;
+  --chassis-panel: #191d23;
+  --chassis-seam: #2b313b;
+  --crt-well: #050907;
+  font-family: 'Chakra Petch', system-ui, -apple-system, sans-serif;
+}
+
 @layer base {
-  :root {
-    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  body {
+    background-color: var(--chassis-desk);
   }
 
   code,
@@ -10,14 +18,53 @@
   textarea,
   .font-mono {
     font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
   }
+}
+
+.font-hardware {
+  font-family: 'Chakra Petch', system-ui, -apple-system, sans-serif;
+}
+
+.chassis-desk {
+  background-color: var(--chassis-desk);
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hardware-panel {
+  background-color: var(--chassis-panel);
+  border: 1px solid var(--chassis-seam);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.crt-glass {
+  box-shadow:
+    inset 0 0 36px rgba(0, 0, 0, 0.88),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pf-keycap {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 2px 0 #090b0e;
+}
+
+.scope-grid {
+  background-color: #050907;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.16) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
 .crt-scanlines {
   background-image: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 50%,
-    rgba(0, 0, 0, 0.22) 50%
+    rgba(0, 0, 0, 0.24) 50%
   );
   background-size: 100% 4px;
 }

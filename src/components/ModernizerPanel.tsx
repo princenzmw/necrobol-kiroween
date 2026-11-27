@@ -47,17 +47,17 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+      <section className="hardware-panel rounded-xs p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {transpiled.parity.passed ? (
-              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+              <CheckCircle2 className="h-5 w-5 text-[#34F585]" />
             ) : (
               <XCircle className="h-5 w-5 text-rose-400" />
             )}
             <div>
-              <h2 className="font-mono text-sm font-bold text-zinc-100">
-                BYTE-FOR-BYTE PARITY PROOF
+              <h2 className="font-hardware text-sm font-bold text-zinc-100">
+                Byte-for-Byte Parity Proof
               </h2>
               <p className="text-xs text-zinc-400">
                 Compares COBOL-85 runtime stdout against independent modern TypeScript execution
@@ -66,9 +66,9 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
           </div>
 
           <span
-            className={`rounded border px-2.5 py-1 font-mono text-xs font-bold ${
+            className={`rounded-xs border px-2.5 py-1 font-mono text-xs font-bold ${
               transpiled.parity.passed
-                ? 'border-emerald-700 bg-emerald-950/60 text-emerald-300'
+                ? 'border-emerald-700 bg-[#04130B] text-[#34F585]'
                 : 'border-rose-700 bg-rose-950/60 text-rose-300'
             }`}
           >
@@ -76,16 +76,16 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
           </span>
         </div>
 
-        <div className="mt-3 overflow-x-auto rounded-lg border border-zinc-800 bg-black/70">
+        <div className="crt-glass mt-3 overflow-x-auto rounded-xs border border-[#2B313B] bg-[#050907]">
           <table className="w-full text-left font-mono text-[11px]">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-500">
+              <tr className="border-b border-[#1E242C] text-zinc-400">
                 <th className="px-3 py-1.5">#</th>
                 <th className="px-3 py-1.5">COBOL-85 STDOUT</th>
                 <th className="px-3 py-1.5">MODERN TS STDOUT</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-900">
+            <tbody className="divide-y divide-[#151A22]">
               {transpiled.parity.lineDiffs.map((row) => (
                 <tr key={row.lineIndex}>
                   <td className="px-3 py-1.5 text-zinc-500">{row.lineIndex}</td>
@@ -100,8 +100,8 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
         </div>
       </section>
 
-      <section className="rounded-xl border border-zinc-800 bg-zinc-950">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 px-4 py-2.5">
+      <section className="hardware-panel rounded-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2B313B] px-4 py-2.5">
           <div className="flex items-center gap-1.5">
             <FileCode2 className={`h-4 w-4 ${tokens.accentText}`} />
             {(['typescript', 'python', 'vitest'] as CodeTab[]).map((t) => (
@@ -109,10 +109,10 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
                 key={t}
                 type="button"
                 onClick={() => setTab(t)}
-                className={`cursor-pointer rounded px-2.5 py-1 font-mono text-xs transition ${
+                className={`cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition ${
                   tab === t
                     ? `${tokens.buttonSolid} font-semibold`
-                    : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+                    : 'text-zinc-400 hover:bg-[#111418] hover:text-zinc-100'
                 }`}
               >
                 {t === 'typescript' ? 'TypeScript' : t === 'python' ? 'Python 3' : 'Vitest Parity'}
@@ -124,15 +124,15 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
             <button
               type="button"
               onClick={handleCopy}
-              className="inline-flex cursor-pointer items-center gap-1 rounded border border-zinc-700 bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-200 hover:bg-zinc-800"
+              className="pf-keycap inline-flex cursor-pointer items-center gap-1 rounded-xs border border-[#38404D] bg-[#222730] px-2.5 py-1 font-mono text-xs text-zinc-200 hover:bg-[#2A303B]"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <Check className="h-3.5 w-3.5 text-[#34F585]" /> : <Copy className="h-3.5 w-3.5" />}
               {copied ? 'Copied' : 'Copy'}
             </button>
             <button
               type="button"
               onClick={handleDownload}
-              className="inline-flex cursor-pointer items-center gap-1 rounded border border-zinc-700 bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-200 hover:bg-zinc-800"
+              className="pf-keycap inline-flex cursor-pointer items-center gap-1 rounded-xs border border-[#38404D] bg-[#222730] px-2.5 py-1 font-mono text-xs text-zinc-200 hover:bg-[#2A303B]"
             >
               <Download className="h-3.5 w-3.5" />
               Download .{ext}
@@ -140,7 +140,7 @@ export function ModernizerPanel({ transpiled, theme }: ModernizerPanelProps) {
           </div>
         </div>
 
-        <pre className="max-h-[420px] overflow-auto bg-black/75 p-4 font-mono text-xs leading-5 text-zinc-200">
+        <pre className="crt-glass m-2 max-h-[420px] overflow-auto rounded-xs border border-[#2B313B] bg-[#050907] p-4 font-mono text-xs leading-5 text-zinc-200">
           {activeCode}
         </pre>
       </section>
